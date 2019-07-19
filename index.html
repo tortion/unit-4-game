@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Crystal Collector game</title>  <!--- Michael Weitman --->
+
+  <style type="text/css">
+    .crystal-image {
+      width: 120px;
+      height: 120px;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="jumbotron">
+    <h1>Crystal Collector</h1>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class=col-md-12>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Game Instructions</h5>
+            <h6 class="card-subtitle text-muted">$.25 per game; Yes! I accept Paypal</h6>
+            <hr>
+            <p>You will be given a Target Value in the form of a random number at the start of the game.</p>
+            <p>There are four crystals below. By clicking on a crystal you will add a specific amount of points to your
+              total score.</p>
+            <p>The object of the game is to match your Total Score to the randomly generated Target Value; you lose the
+              game if your
+              total score goes above the random number or if you run out of time. The value of each crystal is hidden
+              from you until you click on it. Each time when the game re-starts,
+              the crystals and values per crystal will change.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class=col-md-1></div>
+      <div class=col-md-3>
+        <div class="card mt-2">
+          <h3 class="card-header">Target Value</h3>
+          <div class="card-body text-center">
+            <h3 id="hTarget"></h3>
+          </div>
+        </div>
+      </div>
+      <div class=col-md-3>
+        <div class="card mt-2">
+          <h3 class="card-header">Total Score</h3>
+          <div class="card-body text-center">
+            <h3 id="hTotalScore"></h3>
+          </div>
+        </div>
+      </div>
+      <div class=col-md-2>
+        <div class="card mt-2">
+          <h3 class="card-header">Wins</h3>
+          <div class="card-body text-center">
+            <h3 id="hWins"></h3>
+          </div>
+        </div>
+      </div>
+      <div class=col-md-2>
+        <div class="card mt-2">
+          <h3 class="card-header">Losses</h3>
+          <div class="card-body text-center">
+            <h3 id="hLosses"></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class=col-md-3></div>
+      <div id="crystals"></div>     <!--- dynamic Crystal structs built out here -->
+      <div class=col-md-2></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+// array of fancy jewels found on the world wide web
+
+    imageArray = ["http://uploads.webflow.com/5a8cfc09aee91400019461b0/5a8cffecaee91400019463c5_Asset%201%402x.png",
+      "http://uploads.webflow.com/5a8cfc09aee91400019461b0/5a8cffecaee91400019463c4_Asset%202%402x.png",
+      "http://uploads.webflow.com/5a8cfc09aee91400019461b0/5a8cffec2d6ad40001720f22_Asset%205%402x.png",
+      "http://uploads.webflow.com/5a8cfc09aee91400019461b0/5a8d073baee9140001946903_Asset%206%402x.png"];
+
+    var gTarget = document.getElementById("hTarget");
+    var gTotalScore = document.getElementById("hTotalScore");
+    var gWins = document.getElementById("hWins");
+    var gLosses = document.getElementById("hLosses");
+
+    gWins.textContent = 0;
+    gLosses.textContent = 0;
+
+    gTotalScore.textContent = 0;
+    gTarget.textContent = Math.floor(Math.random() * 102) + 19;
+
+    $(".crystal-image").on("click", function () {
+      var crystalValue = ($(this).attr("data-crystalvalue"));
+      crystalValue = parseInt(crystalValue);
+      counter += crystalValue;
+    })
+
+    $("#number-to-guess").text(gTarget);
+    var counter = 0;
+
+    // Next we create a for loop to create crystals for every numberOption.
+    for (var i = 0; i < 4; i++) {
+      randValue = Math.floor(Math.random() * 12) + 1;
+      console.log("crystal " + i + " = " + randValue);
+      var imageCrystal = $("<img>");
+      imageCrystal.addClass("crystal-image");
+      imageCrystal.attr("src", imageArray[i]);
+      imageCrystal.attr("data-crystalvalue", randValue);
+      imageCrystal.attr("id", i);
+      $("#crystals").append(imageCrystal);
+    }
+
+    // This time, our click event applies to every single crystal on the page. Not just one.
+    $(".crystal-image").on("click", function () {
+      var crystalValue = ($(this).attr("data-crystalvalue"));
+      crystalValue = parseInt(crystalValue);
+      counter += crystalValue;
+      gTotalScore.textContent = counter;
+      console.log(counter);
+      if (counter == gTarget.textContent) {
+        gWins.textContent++;
+        resetGame();
+      }
+      else if (counter >= gTarget.textContent) {
+        gLosses.textContent++;
+        resetGame();
+      }
+    });
+
+    function resetGame() {   // This function is called between games it initialze var and the random #'s
+      counter = 0;
+      //$("#crystals").remove(imageCrystal);
+      gTotalScore.textContent = counter;
+      gTarget.textContent = Math.floor(Math.random() * 102) + 19;
+      for (var i = 0; i < 4; i++) {
+        randValue = Math.floor(Math.random() * 12) + 1;
+        console.log("crystal " + i + " = " + randValue);
+        $("#" + i).attr("data-crystalvalue", randValue);
+      }
+    }
+
+
+  </script>
+</body>
+
+</html>
